@@ -173,6 +173,13 @@ class Vectorizer : public IRMutator {
     });
   }
 
+  Expr* mutate(Mod* v) override {
+    std::vector<Expr*> inputs = {v->lhs(), v->rhs()};
+    return try_vectorize(v, inputs, [&]() {
+      return ExprHandle(inputs[0]) % ExprHandle(inputs[1]);
+    });
+  }
+
   Expr* mutate(And* v) override {
     std::vector<Expr*> inputs = {v->lhs(), v->rhs()};
     return try_vectorize(v, inputs, [&]() {
